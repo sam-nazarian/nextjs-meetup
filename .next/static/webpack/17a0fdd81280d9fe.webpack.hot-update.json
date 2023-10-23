@@ -1,0 +1,1 @@
+{"c":["webpack"],"r":["pages/[meetupid]"],"m":["./components/meetups/MeetupDetail.js","./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=%2FUsers%2Fsaman%2FDesktop%2Fgithub-projects%2Fnextjs-meetup%2Fpages%2F%5Bmeetupid%5D%2Findex.js&page=%2F%5Bmeetupid%5D!","./pages/[meetupid]/index.js"]}
