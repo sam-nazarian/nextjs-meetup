@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 import MeetupList from '../components/meetups/MeetupList';
 
 const DUMMY_MEETUPS = [
@@ -18,7 +20,17 @@ const DUMMY_MEETUPS = [
 ];
 
 function HomePage() {
-  return <MeetupList meetups={DUMMY_MEETUPS} />;
+  const [loadedMeetups, setLoadedMeetups] = useState([]);
+
+  // useEffect executes the callback function AFTER the component function was executed
+  // nextJS returns the result of the first component render cycle (which is an empty page), rather than the fully rendered page
+  // pre-render data
+  useEffect(() => {
+    // send a http request and fetch data
+    setLoadedMeetups(DUMMY_MEETUPS);
+  }, []);
+
+  return <MeetupList meetups={loadedMeetups} />;
 }
 
 export default HomePage;
