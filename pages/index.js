@@ -35,6 +35,23 @@ function HomePage(props) {
   return <MeetupList meetups={props.meetups} />;
 }
 
+/*
+// Runs for every incoming request (creates pre-generate of the page dynamically)
+export async function getServerSideProps(context) {
+  const req = context.req; //access to the request and response objs similar to nodeJS and Express
+  const res = context.res;
+
+  // Fetch data from an API
+
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+  };
+}
+*/
+
+// Cached and reused unlike getServerSideProps()
 // Code will never end up on the client side, runs before the HomePage component\
 //data fetching is now on the server-side
 export async function getStaticProps() {
