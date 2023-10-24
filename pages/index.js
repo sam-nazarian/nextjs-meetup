@@ -19,7 +19,8 @@ const DUMMY_MEETUPS = [
   },
 ];
 
-function HomePage() {
+function HomePage(props) {
+  /*
   const [loadedMeetups, setLoadedMeetups] = useState([]);
 
   // useEffect executes the callback function AFTER the component function was executed
@@ -29,8 +30,22 @@ function HomePage() {
     // send a http request and fetch data
     setLoadedMeetups(DUMMY_MEETUPS);
   }, []);
+  */
 
-  return <MeetupList meetups={loadedMeetups} />;
+  return <MeetupList meetups={props.meetups} />;
+}
+
+// Code will never end up on the client side, runs before the HomePage component\
+//data fetching is now on the server-side
+export async function getStaticProps() {
+  // Fetch data from an API
+
+  // must return a props obj
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS,
+    },
+  };
 }
 
 export default HomePage;
