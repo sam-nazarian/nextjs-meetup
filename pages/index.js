@@ -45,6 +45,8 @@ export async function getStaticProps() {
     props: {
       meetups: DUMMY_MEETUPS,
     },
+    revalidate: 10,
+    //uses incremental static generation, 10 is the number of seconds it waits before it re-generates the page for incoming requests and would replace the old pre-generated pages (helpful as you wouldn't need to re-deploy)
   };
 }
 
