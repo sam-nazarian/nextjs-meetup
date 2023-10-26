@@ -1,23 +1,25 @@
-import { useEffect, useState } from 'react';
+// nextJs will only include this in the server-side as it is being used there only
+import { MongoClient } from 'mongodb';
+// import { useEffect, useState } from 'react';
 
 import MeetupList from '../components/meetups/MeetupList';
 
-const DUMMY_MEETUPS = [
-  {
-    id: 'm1',
-    title: 'A First Meetup',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Stadtbild_M%C3%BCnchen.jpg',
-    address: 'Some address 5, 12345 Some City',
-    description: 'This is a first meetup!',
-  },
-  {
-    id: 'm2',
-    title: 'A First Meetup',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Stadtbild_M%C3%BCnchen.jpg',
-    address: 'Some address 10, 12345 Some City',
-    description: 'This is a first meetup!',
-  },
-];
+// const DUMMY_MEETUPS = [
+//   {
+//     id: 'm1',
+//     title: 'A First Meetup',
+//     image: 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Stadtbild_M%C3%BCnchen.jpg',
+//     address: 'Some address 5, 12345 Some City',
+//     description: 'This is a first meetup!',
+//   },
+//   {
+//     id: 'm2',
+//     title: 'A First Meetup',
+//     image: 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Stadtbild_M%C3%BCnchen.jpg',
+//     address: 'Some address 10, 12345 Some City',
+//     description: 'This is a first meetup!',
+//   },
+// ];
 
 function HomePage(props) {
   /*
@@ -56,11 +58,25 @@ export async function getServerSideProps(context) {
 //data fetching is now on the server-side
 export async function getStaticProps() {
   // Fetch data from an API
+  const client = await MongoClient.connect('mongodb+srv://Sam:Q0tqIcdQL6tMw3dS@cluster0.lmjhspc.mongodb.net/meetups?retryWrites=true&w=majority');
+
+  const db = client.db();
+
+  const meetupsCollection = db.collection('meetups');
+
+  const meetups = await meetupsCollection.find().toArray();
+
+  client.close();
 
   // must return a props obj
   return {
     props: {
-      meetups: DUMMY_MEETUPS,
+      meetups: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString(),
+      })),
     },
     revalidate: 10,
     //uses incremental static generation, 10 is the number of seconds it waits before it re-generates the page for incoming requests and would replace the old pre-generated pages (helpful as you wouldn't need to re-deploy)
