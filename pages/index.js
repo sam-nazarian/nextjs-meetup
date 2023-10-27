@@ -1,8 +1,10 @@
+import Head from 'next/head';
 // nextJs will only include this in the server-side as it is being used there only
 import { MongoClient } from 'mongodb';
 // import { useEffect, useState } from 'react';
 
 import MeetupList from '../components/meetups/MeetupList';
+import { Fragment } from 'react';
 
 // const DUMMY_MEETUPS = [
 //   {
@@ -34,7 +36,16 @@ function HomePage(props) {
   }, []);
   */
 
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <Fragment>
+      <Head>
+        {/* Add a title to a window */}
+        <title>React Meetups</title>
+        <meta name='description' content='Brose a huge list of highly active React meetups!' />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </Fragment>
+  );
 }
 
 /*
