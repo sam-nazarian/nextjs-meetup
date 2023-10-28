@@ -1,7 +1,8 @@
 import { MongoClient, ObjectId } from 'mongodb';
-import MeetupDetail from '../../components/meetups/MeetupDetail';
 import { Fragment } from 'react';
 import Head from 'next/head';
+
+import MeetupDetail from './components/meetups/MeetupDetail';
 
 function MeetupDetails(props) {
   return (
@@ -10,67 +11,48 @@ function MeetupDetails(props) {
         <title>{props.meetupData.title}</title>
         <meta name='description' content={props.meetupData.description} />
       </Head>
-
       <MeetupDetail image={props.meetupData.image} title={props.meetupData.title} address={props.meetupData.address} description={props.meetupData.description} />
     </Fragment>
   );
 }
 
-/*
-  getStaticPaths: Determines the paths for the dynamic routes that need to be pre-rendered.
-  getStaticProps: Fetches the required data for the paths determined by getStaticPaths so that each page gets pre-rendered with its specific data.
-*/
-
-// For dynamic pages, if you use getStaticProps you are required to use the getStaticPaths()
 export async function getStaticPaths() {
   const client = await MongoClient.connect('mongodb+srv://Sam:Q0tqIcdQL6tMw3dS@cluster0.lmjhspc.mongodb.net/meetups?retryWrites=true&w=majority');
   const db = client.db();
+
   const meetupsCollection = db.collection('meetups');
 
-  // the first find() param is for filtering a collection, _id:1 means that only include id and no other values
   const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+
+  // console.log(
+  //   meetups.map((meetup) => ({
+  //     params: { meetupid: meetup._id.toString() },
+  //   }))
+  // );
 
   client.close();
 
   return {
-    // "false" causes anything that's not supported under the paths array to go to the 404 error
-    // "true" nextJS will generate a page for the meetupid dynamically on the server
-
     fallback: false,
-    paths: meetups.map((meetup) => ({ params: { meetupid: meetup._id.toString() } })),
-
-    // [
-    //   {
-    //     params: {
-    //       meetupid: 'm1',
-    //     },
-    //   },
-    //   {
-    //     params: {
-    //       meetupid: 'm2',
-    //     },
-    //   },
-    // ],
+    paths: meetups.map((meetup) => ({
+      params: { meetupid: meetup._id.toString() },
+    })),
   };
 }
 
-//pre-generated during build process
-// can't use react hooks in getStaticProps()
 export async function getStaticProps(context) {
-  //fetch data for a single meetup
+  // fetch data for a single meetup
 
-  //context in getStaticProps() will not hold req & res objs but it will have a params key
-
-  const meetupid = context.params.meetupid; //this is a String
-
-  // console.log(meetupid);
+  const meetupid = context.params.meetupid;
 
   const client = await MongoClient.connect('mongodb+srv://Sam:Q0tqIcdQL6tMw3dS@cluster0.lmjhspc.mongodb.net/meetups?retryWrites=true&w=majority');
   const db = client.db();
+
   const meetupsCollection = db.collection('meetups');
 
-  // To properly look for an ID, which is a String we first need to convert it to ObjectId
-  const selectedMeetup = await meetupsCollection.findOne({ _id: new ObjectId(meetupid) }); //in mongoDB id's are object
+  const selectedMeetup = await meetupsCollection.findOne({
+    _id: new ObjectId(meetupid),
+  });
 
   client.close();
 
